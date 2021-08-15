@@ -1,0 +1,43 @@
+# Import Important Libraries
+
+import tensorflow as tf
+from keras.preprocessing.image import ImageDataGenerator # This library reads the image data
+
+train_datagen = ImageDataGenerator(
+        rescale=1./255,   # Scale the data
+        shear_range=0.2,  
+        zoom_range=0.2,
+        horizontal_flip=True)
+        
+train_set = train_datagen.flow_from_directory( # It takes image data from our directory
+        'dataset/training_set',    # Path where Data is Stored
+        target_size=(64, 64),      # Resolution
+        batch_size=32,             # No of Training Data Utilized in 1 itteration
+        class_mode='binary')       # Here our class mode is Binary wheteher it is a cat or a dog
+        
+test_datagen = ImageDataGenerator(rescale=1./255) # now we should not do anything on our test data
+
+tets_set = test_datagen.flow_from_directory(
+        'dataset/test_set',
+        target_size=(64, 64),
+        batch_size=32,
+        class_mode='binary')
+
+cnn = tf.keras.models.Sequential()
+
+cnn.add(tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu', input_shape=[64,64,3])) # First we need to do covolution 
+cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2)) # then we should pool our Data
+cnn.add(tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu')) # Again add 2nd layer of Convolution
+cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2)) # Add 2nd Layer of Maxpool
+cnn.add(tf.keras.layers.Flatten()) # Now to convert our Pooling and Convolutional Data into array
+cnn.add(tf.keras.layers.Dense(units=128, activation='relu')) # First Hidden Layer
+cnn.add(tf.keras.layers.Dense(units=1, activation='sigmoid')) # Final Output
+
+
+
+
+
+
+
+
+
